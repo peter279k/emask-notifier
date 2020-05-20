@@ -54,7 +54,6 @@ elif [[ $emask_next_date == $today_date ]]; then
 elif [[ $emask_end_date == $today_date ]]; then
     times="最後一次"
     echo "Do End Date SMS API Call!";
-    exit 0;
 else
     echo "Do nothing!"
     exit 0;

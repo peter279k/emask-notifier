@@ -12,6 +12,7 @@ And the format is as follows:
 ```
 user_name,user_phone
 ```
-- Set `api_key` environment variable with `export api_key={your_api_key}`
-- Set `api_secret` environment variable with `export api_secret={your_api_secret}`
+- Set `api_key` as a system environment variable with `echo 'export api_key="{your_api_key}"' | sudo tee -a /etc/environment` on `/etc/environment` file
+- Set `api_secret` as a system environment variable with `echo 'export api_secret="{your_api_secret}"' | sudo tee -a /etc/environment` on `/etc/environment` file
 - Set Cronjob to let this Bash script do work automatically.
+- Done. Happy to do notification for your friends :)!
