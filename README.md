@@ -6,7 +6,7 @@ Using the Nexmo API to make SMS message with specific phone number and user.
 
 ## Installation
 
-- Set up a Nexmo account on (Nexmo developer site)[https://dashboard.nexmo.com/]
+- Set up a Nexmo account on [Nexmo developer site](https://dashboard.nexmo.com/)
 - Creating `phone.csv` and locate this CSV file is with `emask-notifier.sh` on same directory
 And the format is as follows:
 ```
