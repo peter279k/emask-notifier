@@ -25,9 +25,11 @@ if [[ $? = 1 ]]; then
 fi;
 
 sed -i -e 's/<div class="col "><p style="margin-top: 10px; margin-bottom: 10px; font-size: 14px; font-weight: 400; color: #D00000;">//g' index.html
+sed -i -e 's/<div class="col "><p style="margin-top: 10px; margin-bottom: 10px; font-size: 14px; font-weight: 400;">//g' index.html
 sed -i -e 's/<\/p><\/div>//g' index.html
 
 emask_notification_message=$(cat index.html | grep -P "新訂購(\w+)期")
+emask_timeline_message=$(cat index.html | grep "領取口罩")
 
 if [[ $? != 0 ]]; then
     echo "Cannot find 新訂購(\w+)期 pattern!"
@@ -78,7 +80,7 @@ do
     user_phone=$(echo ${phone_list} | awk '{split($1,a,","); print a[2]}')
 
     sms_template=$(printf "${phone_template}" ${user_name} ${times})
-    sms_template=$(echo ${sms_template}${emask_notification_message})
+    sms_template=$(echo ${sms_template}${emask_notification_message}"("${emask_timeline_message}")")
 
     curl -X "POST" "https://rest.nexmo.com/sms/json" \
       -d "from=Emask-Notifier" \
