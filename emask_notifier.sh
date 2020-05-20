@@ -62,8 +62,6 @@ else
 fi;
 
 phone_file_path="${PWD}/phone.csv"
-# phone_user=$(cat ${phone_file_path} | awk '{print $1}')
-# phone_number=$(cat ${phone_file_path} | awk '{print $2}')
 
 if [[ ! -f ${phone_file_path} ]]; then
     echo "Please create phone.csv on $PWD folder"
@@ -80,7 +78,7 @@ do
     user_phone=$(echo ${phone_list} | awk '{split($1,a,","); print a[2]}')
 
     sms_template=$(printf "${phone_template}" ${user_name} ${times})
-    sms_template=$(echo ${sms_template}${emask_notification_message}"("${emask_timeline_message}")")
+    sms_template=$(echo ${sms_template}${emask_notification_message}${emask_timeline_message})
 
     curl -X "POST" "https://rest.nexmo.com/sms/json" \
       -d "from=Emask-Notifier" \
