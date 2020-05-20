@@ -29,7 +29,7 @@ sed -i -e 's/<div class="col "><p style="margin-top: 10px; margin-bottom: 10px; 
 sed -i -e 's/<\/p><\/div>//g' index.html
 
 emask_notification_message=$(cat index.html | grep -P "新訂購(\w+)期")
-emask_timeline_message=$(cat index.html | grep "領取口罩")
+emask_timeline_message=$(cat index.html | grep "領取口罩" | sed -e "s/ //g")
 
 if [[ $? != 0 ]]; then
     echo "Cannot find 新訂購(\w+)期 pattern!"
