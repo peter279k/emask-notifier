@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source "$HOME/.bashrc"
+
 which curl 2>&1 > /dev/null
 
 if [[ $api_key == "" ]]; then
