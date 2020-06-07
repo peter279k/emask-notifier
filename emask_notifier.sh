@@ -30,6 +30,7 @@ sed -i -e 's/<div class="col "><p style="margin-top: 10px; margin-bottom: 10px; 
 sed -i -e 's/<div class="col "><p style="margin-top: 10px; margin-bottom: 10px; font-size: 14px; font-weight: 400;">//g' index.html
 sed -i -e 's/<\/p><\/div>//g' index.html
 
+emask_maintain_message=$(cat index.html | grep "維護" | sed -e "s/ //g")
 emask_notification_message=$(cat index.html | grep "(新訂購)")
 emask_timeline_message=$(cat index.html | grep "領取口罩" | sed -e "s/ //g")
 
@@ -82,7 +83,7 @@ do
     user_phone=$(echo ${phone_list} | awk '{split($1,a,","); print a[2]}')
 
     sms_template=$(printf "${phone_template}" ${user_name} ${times})
-    sms_template=$(echo ${sms_template}${emask_notification_message}${emask_timeline_message})
+    sms_template=$(echo ${sms_template}${emask_notification_message}${emask_timeline_message${emask_maintain_message}})
 
     curl -X "POST" "https://rest.nexmo.com/sms/json" \
       -d "from=Emask-Notifier" \
