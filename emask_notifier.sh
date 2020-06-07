@@ -34,12 +34,6 @@ emask_maintain_message=$(cat index.html | grep "維護" | sed -e "s/ //g")
 emask_notification_message=$(cat index.html | grep "請多加利用")
 emask_timeline_message=$(cat index.html | grep "領取口罩" | sed -e "s/ //g")
 
-if [[ $? != 0 ]]; then
-    echo "Cannot find 新訂購(\w+)期 pattern!"
-    rm -f index.html
-    exit 1;
-fi;
-
 rm -f index.html
 
 today_date=$(date '+%F')
