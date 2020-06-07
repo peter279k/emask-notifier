@@ -81,7 +81,7 @@ do
     user_phone=$(echo ${phone_list} | awk '{split($1,a,","); print a[2]}')
 
     sms_template=$(printf "${phone_template}" ${user_name} ${times})
-    sms_template=$(echo ${sms_template}${emask_notification_message}${emask_timeline_message${emask_maintain_message}})
+    sms_template=$(echo ${sms_template}${emask_notification_message}${emask_timeline_message}${emask_maintain_message})
 
     curl -X "POST" "https://rest.nexmo.com/sms/json" \
       -d "from=Emask-Notifier" \
