@@ -30,7 +30,7 @@ sed -i -e 's/<div class="col "><p style="margin-top: 10px; margin-bottom: 10px; 
 sed -i -e 's/<div class="col "><p style="margin-top: 10px; margin-bottom: 10px; font-size: 14px; font-weight: 400;">//g' index.html
 sed -i -e 's/<\/p><\/div>//g' index.html
 
-emask_notification_message=$(cat index.html | grep -P "新訂購(\w+)期")
+emask_notification_message=$(cat index.html | grep "(新訂購)")
 emask_timeline_message=$(cat index.html | grep "領取口罩" | sed -e "s/ //g")
 
 if [[ $? != 0 ]]; then
@@ -43,10 +43,12 @@ rm -f index.html
 
 today_date=$(date '+%F')
 emask_start_date=$(echo $emask_notification_message | awk '{print $2}')
+emask_start_date=$(echo $emask_start_date | awk '{split($1,a,"-"); print a[1]}')
 emask_start_date=$(date --date="${emask_start_date}" "+%F")
 emask_next_date=$(date --date="${emask_start_date} +1 day" "+%F")
 
-emask_end_date=$(echo $emask_notification_message | awk '{print $5}')
+emask_end_date=$(echo $emask_notification_message | awk '{print $2}')
+emask_end_date=$(echo $emask_end_date | awk '{split($1,a,"-"); print a[2]}')
 emask_end_date=$(date --date="${emask_end_date}" "+%F")
 
 if [[ $emask_start_date == $today_date ]]; then
