@@ -26,8 +26,10 @@ user_name,user_phone
 
 ## Emask Notifier for notifier.php Installation
 
-- Checking the `supervisor` command has been available on deployed operating system.
+- Checking the `supervisor` and `curl` command have been available on deployed operating system.
 - `PHP 7.4` has been installed on Ubuntu operating system.
+- Download `composer.phar` with `curl -sS https://getcomposer.org/installer` command.
+- Running `php composer.phar update -n` command.
 - Creating the `.env` to setup the `VONAGE_API_KEY` and `VONAGE_API_SECRET` variables.
 - Creating the `phone.csv` to setup the user phone number lists.
 - Running the `notifier_php_builder.sh` script to setup all of above works.
