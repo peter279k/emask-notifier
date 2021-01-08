@@ -23,7 +23,7 @@ supervisor_path='/etc/supervisor/conf.d/notifier-php.conf'
 ${sudo_prefix}touch ${supervisor_path}
 
 echo '[program:notifier-php]' | ${sudo_prefix}tee ${supervisor_path}
-echo "command=/bin/bash -c \"cd $PWD && /usr/bin/php.default notifier.php\"" | ${sudo_prefix}tee -a ${supervisor_path}
+echo "command=/bin/bash -c \"cd $PWD && /usr/bin/php7.4 notifier.php\"" | ${sudo_prefix}tee -a ${supervisor_path}
 echo 'autostart=true' | ${sudo_prefix}tee -a ${supervisor_path}
 echo 'autorestart=true' | ${sudo_prefix}tee -a ${supervisor_path}
 echo "user=$USER" | ${sudo_prefix}tee -a ${supervisor_path}
