@@ -32,4 +32,10 @@ echo "stdout_logfile=$PWD/notifier-php.log" | ${sudo_prefix}tee -a ${supervisor_
 
 ${sudo_prefix}systemctl restart supervisor
 
+if [[ $? != 0 ]]; then
+    ${sudo_prefix}rm -f ${supervisor_path}
+    echo -e "${red_color}The supervisor service is not found. Do you install it?${rest_color}"
+    exit 1;
+fi;
+
 echo -e "${green_color}Building PHP Notifier has been done!${rest_color}"
