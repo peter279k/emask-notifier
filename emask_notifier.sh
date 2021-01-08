@@ -1,5 +1,11 @@
 #!/bin/bash
 
+red_color='\e[0;31m'
+rest_color='\e[0m'
+
+echo -e "${red_color}Deprecated! This shell script has been deprecated. Please use notifier.php instead!${rest_color}"
+exit 1;
+
 source "$HOME/.bashrc"
 
 which curl 2>&1 > /dev/null
