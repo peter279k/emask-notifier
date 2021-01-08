@@ -28,7 +28,7 @@ user_name,user_phone
 
 - Checking the `supervisor` and `curl` command have been available on deployed operating system.
 - `PHP 7.4` has been installed on Ubuntu operating system.
-- Download `composer.phar` with `curl -sS https://getcomposer.org/installer` command.
+- Download `composer.phar` with `curl -sS https://getcomposer.org/installer | php7.4` command.
 - Running `php composer.phar update -n` command.
 - Creating the `.env` to setup the `VONAGE_API_KEY` and `VONAGE_API_SECRET` variables.
 - Creating the `phone.csv` to setup the user phone number lists.
