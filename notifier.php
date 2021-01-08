@@ -29,7 +29,7 @@ function sendSMS($notificationMessage): bool {
 
     if (false === file_exists($phoneFilePath)) {
         echo 'Cannot find phone.csv file!' . PHP_EOL;
-        exit(1);
+        return false;
     }
     $handler = fopen($phoneFilePath, 'r');
     while (false === feof($handler)) {
@@ -44,12 +44,12 @@ function sendSMS($notificationMessage): bool {
 
         if (false === defined('VONAGE_API_KEY')) {
             echo 'VONAGE_API_KEY is not defined!' . PHP_EOL;
-            exit(1);
+            return false;
         }
 
         if (false === defined('VONAGE_API_SECRET')) {
             echo 'VONAGE_API_KEY is not defined!' . PHP_EOL;
-            exit(1);
+            return false;
         }
 
         $basic  = new Basic(VONAGE_API_KEY, VONAGE_API_SECRET);
@@ -67,66 +67,75 @@ function sendSMS($notificationMessage): bool {
     return true;
 }
 
-if ('10:00' !== Carbon::now()->format('H:i')) {
-    echo 'Sorry! This worker only works at 10:00 every day' . PHP_EOL;
-    exit(0);
-}
-
-$client = new Client();
-$response = $client->request('GET', 'https://emask.taiwan.gov.tw/msk/index.jsp');
-$body = (string)$response->getBody();
-
-$crawler = new Crawler($body);
-$notificationMsgLists = [];
-$notificationElements = 'p[style="margin-top: 10px; margin-bottom: 10px; font-size: 14px; font-weight: 400;"]';
-$crawler->filter($notificationElements)->reduce(function(Crawler $node, $index) use (&$notificationMsgLists) {
-    $notificationMsgLists[$index] = $node->text();
-});
-
-if (5 !== count($notificationMsgLists)) {
-    echo 'Notification Message fetching Error!' . PHP_EOL;
-    exit(1);
-}
-array_pop($notificationMsgLists);
-
-$notificationMessage = implode("\n", $notificationMsgLists);
-
-$dateCount = preg_match_all('/(\d+\/\d+ \d+:\d+ - \d+\/\d+ \d+:\d+)/', $notificationMsgLists[2], $matched);
-if (1 !== $dateCount) {
-    echo 'Cannot filter date range!' . PHP_EOL;
-    exit(1);
-}
-
-$now = Carbon::now();
-$dateRange = explode(' - ', $matched[0][0]);
-$startDate = $dateRange[0];
-$endDate = $dateRange[1];
-
-if (0 === $now->diff(Carbon::parse($startDate))->days) {
-    echo 'Sending Message!' . PHP_EOL;
-    $result = sendSMS($notificationMessage);
-
-    if (false === $result) {
-        echo sprintf('[%s]Sending Notification Message has been failed!', (string)$now) . PHP_EOL;
-        exit(1);
+$magicSecond = 100;
+while (true) {
+    if ('10:00' !== Carbon::now()->format('H:i')) {
+        // Sorry! This worker only works at 10:00 every day
+        sleep($magicSecond);
+        continue;
     }
 
-    echo sprintf('[%s]Sending Notification Message has been done!', (string)$now) . PHP_EOL;
-    exit(0);
-}
+    $client = new Client();
+    $response = $client->request('GET', 'https://emask.taiwan.gov.tw/msk/index.jsp');
+    $body = (string)$response->getBody();
 
-$now->addDay(-1);
-if (0 === $now->diff(Carbon::parse($startDate))->days) {
-    echo 'Sending Message!' . PHP_EOL;
-    $result = sendSMS($notificationMessage);
+    $crawler = new Crawler($body);
+    $notificationMsgLists = [];
+    $notificationElements = 'p[style="margin-top: 10px; margin-bottom: 10px; font-size: 14px; font-weight: 400;"]';
+    $crawler->filter($notificationElements)->reduce(function(Crawler $node, $index) use (&$notificationMsgLists) {
+        $notificationMsgLists[$index] = $node->text();
+    });
 
-    if (false === $result) {
-        echo sprintf('[%s]Sending Notification Message has been failed!', (string)$now) . PHP_EOL;
-        exit(1);
+    if (5 !== count($notificationMsgLists)) {
+        echo 'Notification Message fetching Error!' . PHP_EOL;
+        sleep($magicSecond);
+        continue;
+    }
+    array_pop($notificationMsgLists);
+
+    $notificationMessage = implode("\n", $notificationMsgLists);
+
+    $dateCount = preg_match_all('/(\d+\/\d+ \d+:\d+ - \d+\/\d+ \d+:\d+)/', $notificationMsgLists[2], $matched);
+    if (1 !== $dateCount) {
+        echo 'Cannot filter date range!' . PHP_EOL;
+        sleep($magicSecond);
+        continue;
     }
 
-    echo sprintf('[%s]Sending Notification Message has been done!', (string)$now) . PHP_EOL;
-    exit(0);
-}
+    $now = Carbon::now();
+    $dateRange = explode(' - ', $matched[0][0]);
+    $startDate = $dateRange[0];
+    $endDate = $dateRange[1];
 
-echo sprintf('[%s] Do Nothing!', (string)$now) . PHP_EOL;
+    if (0 === $now->diff(Carbon::parse($startDate))->days) {
+        echo 'Sending Message!' . PHP_EOL;
+        $result = sendSMS($notificationMessage);
+
+        if (false === $result) {
+            echo sprintf('[%s]Sending Notification Message has been failed!', (string)$now) . PHP_EOL;
+            sleep($magicSecond);
+            continue;
+        }
+
+        echo sprintf('[%s]Sending Notification Message has been done!', (string)$now) . PHP_EOL;
+        sleep($magicSecond);
+        continue;
+    }
+
+    $now->addDay(-1);
+    if (0 === $now->diff(Carbon::parse($startDate))->days) {
+        echo 'Sending Message!' . PHP_EOL;
+        $result = sendSMS($notificationMessage);
+
+        if (false === $result) {
+            echo sprintf('[%s]Sending Notification Message has been failed!', (string)$now) . PHP_EOL;
+            sleep($magicSecond);
+            continue;
+        }
+
+        echo sprintf('[%s]Sending Notification Message has been done!', (string)$now) . PHP_EOL;
+        continue;
+    }
+
+    echo sprintf('[%s] Do Nothing!', (string)$now) . PHP_EOL;
+}
