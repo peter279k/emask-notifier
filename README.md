@@ -26,7 +26,7 @@ user_name,user_phone
 
 ## Emask Notifier for notifier.php Installation
 
-- Checking the `supervisor` and `curl` command have been available on deployed operating system.
+- Checking the `supervisor`, `curl` and `cron` commands have been available on deployed operating system.
 - `PHP 7.4` has been installed on Ubuntu operating system.
 - Download `composer.phar` with `curl -sS https://getcomposer.org/installer | php7.4` command.
 - Running `php composer.phar update -n` command.
