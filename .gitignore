@@ -2,3 +2,4 @@ phone.csv
 vendor/
 composer.lock
 .env
+composer.phar
