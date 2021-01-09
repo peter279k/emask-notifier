@@ -27,6 +27,7 @@ echo "command=/bin/bash -c \"cd $PWD && /usr/bin/php7.4 notifier.php\"" | ${sudo
 echo 'autostart=true' | ${sudo_prefix}tee -a ${supervisor_path}
 echo 'autorestart=true' | ${sudo_prefix}tee -a ${supervisor_path}
 echo "user=$USER" | ${sudo_prefix}tee -a ${supervisor_path}
+echo "events=TICK_60" | ${sudo_prefix}tee -a ${supervisor_path}
 echo 'redirect_stderr=true' | ${sudo_prefix}tee -a ${supervisor_path}
 echo "stdout_logfile=$PWD/notifier-php.log" | ${sudo_prefix}tee -a ${supervisor_path}
 
