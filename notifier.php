@@ -40,7 +40,7 @@ function sendSMS($notificationMessage): bool {
         $row = str_getcsv($str);
         $userName = $row[0];
         $userPhoneNumber = $row[1];
-        $notificationMessage = sprintf($welcomeMessageFormat, $userName) . $notificationMessage;
+        $message = sprintf($welcomeMessageFormat, $userName) . $notificationMessage;
 
         if (false === defined('VONAGE_API_KEY')) {
             echo 'VONAGE_API_KEY is not defined!' . PHP_EOL;
@@ -55,7 +55,7 @@ function sendSMS($notificationMessage): bool {
         $basic  = new Basic(VONAGE_API_KEY, VONAGE_API_SECRET);
         $client = new VonageClient($basic);
         $response = $client->sms()->send(
-            new SMS($userPhoneNumber, $userName, $notificationMessage)
+            new SMS($userPhoneNumber, $userName, $Message)
         );
         $current = $response->current();
 
