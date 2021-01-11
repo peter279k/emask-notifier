@@ -55,7 +55,7 @@ function sendSMS($notificationMessage): bool {
         $basic  = new Basic(VONAGE_API_KEY, VONAGE_API_SECRET);
         $client = new VonageClient($basic);
         $response = $client->sms()->send(
-            new SMS($userPhoneNumber, $userName, $Message)
+            new SMS($userPhoneNumber, $userName, $message)
         );
         $current = $response->current();
 
