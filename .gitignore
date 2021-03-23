@@ -3,3 +3,5 @@ vendor/
 composer.lock
 .env
 composer.phar
+notifier-php.log
+result.txt

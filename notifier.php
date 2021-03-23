@@ -3,6 +3,8 @@
 $composerLoadPath = __DIR__ . '/vendor/autoload.php';
 $configPath = __DIR__ . '/config.php';
 
+$timezone = 'Asia/Taipei';
+
 if (false === file_exists($composerLoadPath)) {
     echo 'Composer Autoload Path is not existed.' . PHP_EOL;
     exit(1);
@@ -21,7 +23,35 @@ use GuzzleHttp\Client;
 use Vonage\SMS\Message\SMS;
 use Vonage\Client as VonageClient;
 use Vonage\Client\Credentials\Basic;
+use Vonage\SMS\Exception\Request;
+use Mailjet\Resources;
+use Mailjet\Client as MailjetClient;
 use Symfony\Component\DomCrawler\Crawler;
+
+function sendEmail($message): void {
+    $mj = new MailjetClient(MJ_APIKEY_PUBLIC, MJ_APIKEY_PRIVATE, true, ['version' => 'v3.1']);
+    $body = [
+        'Messages' => [
+            [
+                'From' => [
+                    'Email' => SENDER_EMAIL,
+                    'Name' => "Emask Notifier"
+                ],
+                'To' => [
+                    [
+                        'Email' => RECIPIENT_EMAIL,
+                        'Name' => "You"
+                    ]
+                ],
+                'Subject' => "Emask Notifier Status",
+                'TextPart' => $message,
+                'HTMLPart' => "<h3>$message</h3>",
+           ]
+        ]
+    ];
+
+    $response = $mj->post(Resources::$Email, ['body' => $body]);
+}
 
 function sendSMS($notificationMessage): bool {
     $welcomeMessageFormat = "Hi %s,\n";
@@ -59,7 +89,7 @@ function sendSMS($notificationMessage): bool {
         );
         $current = $response->current();
 
-        echo sprintf('[%s] Message has been sent to %s. Message ID: %s', (string)Carbon::now(), $userName, $current->getMessageId()) . PHP_EOL;
+        echo sprintf('[%s] Message has been sent to %s. Message ID: %s', (string)Carbon::now($timezone), $userName, $current->getMessageId()) . PHP_EOL;
     }
 
     fclose($handler);
@@ -67,7 +97,7 @@ function sendSMS($notificationMessage): bool {
     return true;
 }
 
-if ('10:00' !== Carbon::now()->format('H:i')) {
+if ('10:00' !== Carbon::now($timezone)->format('H:i')) {
     echo 'Sorry! This worker only works at 10:00 every day' . PHP_EOL;
     exit(0);
 }
@@ -97,14 +127,22 @@ if (1 !== $dateCount) {
     exit(1);
 }
 
-$now = Carbon::now();
+$now = Carbon::now($timezone);
 $dateRange = explode(' - ', $matched[0][0]);
 $startDate = $dateRange[0];
 $endDate = $dateRange[1];
 
 if (0 === $now->diff(Carbon::parse($startDate))->days) {
     echo 'Sending Message!' . PHP_EOL;
-    $result = sendSMS($notificationMessage);
+
+    try {
+        $result = sendSMS($notificationMessage);
+    } catch (Request $e) {
+        $message = sprintf('[%s]Send SMS Message is failed: %s', (string)$now, $e->getMessage());
+        echo $message . PHP_EOL;
+        sendEmail($message);
+        exit(1);
+    }
 
     if (false === $result) {
         echo sprintf('[%s]Sending Notification Message has been failed!', (string)$now) . PHP_EOL;

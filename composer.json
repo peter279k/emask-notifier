@@ -6,6 +6,7 @@
         "vlucas/phpdotenv": "^2.5",
         "symfony/dom-crawler": "^5.2",
         "ext-curl": "*",
-        "symfony/css-selector": "^5.2"
+        "symfony/css-selector": "^5.2",
+        "mailjet/mailjet-apiv3-php": "^1.5"
     }
 }
