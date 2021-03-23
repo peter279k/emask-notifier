@@ -30,7 +30,7 @@ user_name,user_phone
 - `PHP 7.4` has been installed on Ubuntu operating system.
 - Download `composer.phar` with `curl -sS https://getcomposer.org/installer | php7.4` command.
 - Running `php composer.phar update -n` command.
-- Creating the `.env` to setup the `VONAGE_API_KEY` and `VONAGE_API_SECRET` variables.
+- Creating the `.env` to setup the `VONAGE_API_KEY`, `VONAGE_API_SECRET`, `SENDER_EMAIL`, `RECIPIENT_EMAIL`, `MJ_APIKEY_PUBLIC` and `MJ_APIKEY_PRIVATE` variables.
 - Creating the `phone.csv` to setup the user phone number lists.
 - Running the `notifier_php_builder.sh` script to setup all of above works.
 
